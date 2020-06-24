@@ -1,0 +1,139 @@
+package us.thezircon.play.rtpme.commands;
+
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabExecutor;
+import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerTeleportEvent;
+import us.thezircon.play.rtpme.RTPMe;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
+
+public class RTP implements TabExecutor {
+
+    private static final RTPMe PLUGIN = RTPMe.getPlugin(RTPMe.class);
+
+    private int maxX = PLUGIN.getConfig().getInt("MaxX");
+    private int maxZ = PLUGIN.getConfig().getInt("MaxZ");
+
+    private Location getRTPLocation(World world) {
+        Random random = new Random();
+        int x = random.nextInt(maxX+1);
+        int z = random.nextInt(maxZ+1);
+
+        if (random.nextBoolean()) {
+            x=x*-1;
+        }
+
+        if (random.nextBoolean()) {
+            z=z*-1;
+        }
+
+        Block top = world.getHighestBlockAt(x, z);
+        return top.getLocation().add(0.5, 1, 0.5);
+    }
+
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            World world = player.getWorld();
+
+            if (args.length==0 && player.hasPermission("rtpme.rtp")) {
+
+                if (PLUGIN.getConfig().getStringList("BlacklistedWorlds").contains(world.getName())) {
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', PLUGIN.getConfig().getString("msgBlacklistedWorld")));
+                    return false;
+                }
+
+                if (PLUGIN.rtpCooldown.containsKey(player) && !player.hasPermission("rtpme.cooldown.bypass")) {
+                    int cooldown = PLUGIN.getConfig().getInt("Cooldown");
+                    long secondsLeft = (PLUGIN.rtpCooldown.get(player)/1000)+cooldown - (System.currentTimeMillis()/1000);
+                    if (secondsLeft>0) {
+                        player.sendMessage(ChatColor.translateAlternateColorCodes('&', PLUGIN.getConfig().getString("msgCooldown").replace("{timeleft}", secondsLeft + "")));
+                        return false;
+                    }
+                }
+
+                String search = ChatColor.translateAlternateColorCodes('&', PLUGIN.getConfig().getString("msgSearch"));
+                player.sendMessage(search);
+
+                Location loc = getRTPLocation(world);
+                while (!isSafe(loc)) {
+                    loc = getRTPLocation(world);
+                }
+
+                player.teleport(loc, PlayerTeleportEvent.TeleportCause.COMMAND);
+
+                // bStats most common biome.
+                String biome = world.getBiome((int) loc.getX(), (int) loc.getY(), (int) loc.getZ()).name();
+                if (PLUGIN.biomeCounter.containsKey(biome)) {
+                    int count = PLUGIN.biomeCounter.get(biome);
+                    count++;
+                    PLUGIN.biomeCounter.put(biome, count);
+                } else {
+                    PLUGIN.biomeCounter.put(biome, 1);
+                }
+
+                Location pLoc = player.getLocation();
+                String locMsg = ChatColor.translateAlternateColorCodes('&', PLUGIN.getConfig().getString("msgLoc"));
+                locMsg = locMsg.replace("{x}", String.valueOf(pLoc.getBlockX()));
+                locMsg = locMsg.replace("{y}", String.valueOf(pLoc.getBlockY()));
+                locMsg = locMsg.replace("{z}", String.valueOf(pLoc.getBlockZ()));
+                player.sendMessage(locMsg);
+
+                //Cooldown
+                long time = System.currentTimeMillis();
+                PLUGIN.rtpCooldown.put(player, time);
+
+            } else if (args.length==1 && args[0].equalsIgnoreCase("reload") && player.hasPermission("rtpme.reload")) {
+                PLUGIN.reloadConfig();
+                String reloadMSG = ChatColor.translateAlternateColorCodes('&', PLUGIN.getConfig().getString("msgReload"));
+                player.sendMessage(reloadMSG);
+            } else {
+                String msgArgsPerm = ChatColor.translateAlternateColorCodes('&', PLUGIN.getConfig().getString("msgArgsPerm"));
+                player.sendMessage(msgArgsPerm);
+            }
+
+        } else {
+            if (sender.hasPermission("rtpme.reload") && args.length==1 && args[0].equalsIgnoreCase("reload")) {
+                PLUGIN.reloadConfig();
+                String reloadMSG = ChatColor.translateAlternateColorCodes('&', PLUGIN.getConfig().getString("msgReload"));
+                sender.sendMessage(reloadMSG);
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        if (args.length==1 && sender.hasPermission("rtpme.reload")) {
+            return Arrays.asList("reload");
+        }
+        return null;
+    }
+
+    private boolean isSafe(Location loc) {
+        if (loc.getBlock().getType().equals(Material.WATER)) {
+            return false;
+        } else if (loc.getBlock().getType().equals(Material.LAVA)) {
+            return false;
+        } else if (loc.subtract(0,1,0).getBlock().getType().equals(Material.LAVA)) {
+            return false;
+        } else if (loc.subtract(0,1,0).getBlock().getType().equals(Material.WATER)) {
+            return false;
+        } else if (loc.add(0,2,0).getBlock().getType().equals(Material.WATER)) {
+            return false;
+        } else return !loc.add(0, 2, 0).getBlock().getType().equals(Material.LAVA);
+    }
+
+}

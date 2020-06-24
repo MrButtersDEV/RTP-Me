@@ -1,0 +1,8 @@
+name: RTP-Me
+version: ${project.version}
+main: us.thezircon.play.rtpme.RTPMe
+authors: [BUTTERFIELD8]
+description: Tp's a player to an unknow location
+commands:
+  rtp:
+    description: Teleports player to a random location.

@@ -1,0 +1,17 @@
+# Messages:
+msgSearch: "&6Finding location..."
+msgLoc: "&aLocation: &c{x} {y} {z}"
+msgReload: "&3Reloaded RTP Me!"
+msgArgsPerm: "&cInvalid arguments and or permission"
+msgCooldown: "&eRTP is on a cooldown please wait &6{timeleft}&e seconds."
+msgBlacklistedWorld: "&cYou cannot rtp in this world."
+
+# Max distances
+MaxX: 1500
+MaxZ: 1500
+
+# Cooldown timer (Seconds):
+Cooldown: 120
+
+BlacklistedWorlds:
+  - worldname
