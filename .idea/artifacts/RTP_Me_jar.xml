@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="RTP Me:jar">
+    <output-path>D:/Minecraft/Server Stuff/Servers/Plugin Test v2 - 1.15.2/plugins</output-path>
+    <root id="archive" name="RTP Me.jar">
+      <element id="module-output" name="RTP Me" />
+    </root>
+  </artifact>
+</component>
