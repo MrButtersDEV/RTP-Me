@@ -3,6 +3,7 @@ package us.thezircon.play.rtpme;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import us.thezircon.play.rtpme.Utils.ConfigUpd;
 import us.thezircon.play.rtpme.Utils.Metrics;
 import us.thezircon.play.rtpme.Utils.VersionChk;
 import us.thezircon.play.rtpme.commands.RTP;
@@ -24,6 +25,10 @@ public final class RTPMe extends JavaPlugin {
         // Config
         getConfig().options().copyDefaults();
         saveDefaultConfig();
+
+        // Update Config
+        ConfigUpd updConf = new ConfigUpd(2);
+        updConf.up2Date();
 
         // Commands
         getCommand("rtp").setExecutor(new RTP());

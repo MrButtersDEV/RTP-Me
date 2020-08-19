@@ -1,19 +1,18 @@
 package us.thezircon.play.rtpme.commands;
 
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 import us.thezircon.play.rtpme.RTPMe;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
 public class RTP implements TabExecutor {
@@ -23,10 +22,13 @@ public class RTP implements TabExecutor {
     private int maxX = PLUGIN.getConfig().getInt("MaxX");
     private int maxZ = PLUGIN.getConfig().getInt("MaxZ");
 
+    private int minX = PLUGIN.getConfig().getInt("MinX");
+    private int minZ = PLUGIN.getConfig().getInt("MinZ");
+
     private Location getRTPLocation(World world) {
         Random random = new Random();
-        int x = random.nextInt(maxX+1);
-        int z = random.nextInt(maxZ+1);
+        int x = random.nextInt((maxX - minX) + 1) + minX;
+        int z = random.nextInt((maxZ - minZ) + 1) + minZ;
 
         if (random.nextBoolean()) {
             x=x*-1;
@@ -66,29 +68,42 @@ public class RTP implements TabExecutor {
                 String search = ChatColor.translateAlternateColorCodes('&', PLUGIN.getConfig().getString("msgSearch"));
                 player.sendMessage(search);
 
-                Location loc = getRTPLocation(world);
-                while (!isSafe(loc)) {
-                    loc = getRTPLocation(world);
-                }
 
-                player.teleport(loc, PlayerTeleportEvent.TeleportCause.COMMAND);
+                Bukkit.getScheduler().runTaskAsynchronously(PLUGIN, new Runnable() {
+                    @Override
+                    public void run() {
+                        Location loc = getRTPLocation(world);
+                        while (!isSafe(loc)) {
+                            loc = getRTPLocation(world);
+                        }
 
-                // bStats most common biome.
-                String biome = world.getBiome((int) loc.getX(), (int) loc.getY(), (int) loc.getZ()).name();
-                if (PLUGIN.biomeCounter.containsKey(biome)) {
-                    int count = PLUGIN.biomeCounter.get(biome);
-                    count++;
-                    PLUGIN.biomeCounter.put(biome, count);
-                } else {
-                    PLUGIN.biomeCounter.put(biome, 1);
-                }
+                        final Location fLoc = loc;
 
-                Location pLoc = player.getLocation();
-                String locMsg = ChatColor.translateAlternateColorCodes('&', PLUGIN.getConfig().getString("msgLoc"));
-                locMsg = locMsg.replace("{x}", String.valueOf(pLoc.getBlockX()));
-                locMsg = locMsg.replace("{y}", String.valueOf(pLoc.getBlockY()));
-                locMsg = locMsg.replace("{z}", String.valueOf(pLoc.getBlockZ()));
-                player.sendMessage(locMsg);
+                        Bukkit.getScheduler().runTask(PLUGIN, new Runnable() {
+                            @Override
+                            public void run() {
+                                player.teleport(fLoc, PlayerTeleportEvent.TeleportCause.COMMAND);
+                            }
+                        });
+
+                        // bStats most common biome.
+                        String biome = world.getBiome((int) loc.getX(), (int) loc.getY(), (int) loc.getZ()).name();
+                        if (PLUGIN.biomeCounter.containsKey(biome)) {
+                            int count = PLUGIN.biomeCounter.get(biome);
+                            count++;
+                            PLUGIN.biomeCounter.put(biome, count);
+                        } else {
+                            PLUGIN.biomeCounter.put(biome, 1);
+                        }
+
+                        Location pLoc = player.getLocation();
+                        String locMsg = ChatColor.translateAlternateColorCodes('&', PLUGIN.getConfig().getString("msgLoc"));
+                        locMsg = locMsg.replace("{x}", String.valueOf(pLoc.getBlockX()));
+                        locMsg = locMsg.replace("{y}", String.valueOf(pLoc.getBlockY()));
+                        locMsg = locMsg.replace("{z}", String.valueOf(pLoc.getBlockZ()));
+                        player.sendMessage(locMsg);
+                    }
+                });
 
                 //Cooldown
                 long time = System.currentTimeMillis();
@@ -133,7 +148,8 @@ public class RTP implements TabExecutor {
             return false;
         } else if (loc.add(0,2,0).getBlock().getType().equals(Material.WATER)) {
             return false;
+        } else if (loc.getWorld().getBiome(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()).name().contains("ocean")) {
+            return false;
         } else return !loc.add(0, 2, 0).getBlock().getType().equals(Material.LAVA);
     }
-
 }

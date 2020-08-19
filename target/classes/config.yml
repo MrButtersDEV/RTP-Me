@@ -1,3 +1,6 @@
+#Config Version:
+confVersion: 2
+
 # Messages:
 msgSearch: "&6Finding location..."
 msgLoc: "&aLocation: &c{x} {y} {z}"
@@ -9,6 +12,10 @@ msgBlacklistedWorld: "&cYou cannot rtp in this world."
 # Max distances
 MaxX: 1500
 MaxZ: 1500
+
+# Min distances
+MinX: 500
+MinZ: 500
 
 # Cooldown timer (Seconds):
 Cooldown: 120
