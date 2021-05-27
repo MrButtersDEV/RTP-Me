@@ -51,17 +51,22 @@ public class RTP implements TabExecutor {
 
             if (args.length==0 && player.hasPermission("rtpme.rtp")) {
 
-                if (PLUGIN.getConfig().getStringList("BlacklistedWorlds").contains(world.getName())) {
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', PLUGIN.getConfig().getString("msgBlacklistedWorld")));
-                    return false;
+                if (PLUGIN.getConfig().getStringList("BlacklistedDimensions").contains(World.Environment.getEnvironment())) {
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', PLUGIN.getConfig().getString("msgWrongDimension")));
+                    return false; 
                 }
 
-                if (PLUGIN.rtpCooldown.containsKey(player) && !player.hasPermission("rtpme.cooldown.bypass")) {
-                    int cooldown = PLUGIN.getConfig().getInt("Cooldown");
-                    long secondsLeft = (PLUGIN.rtpCooldown.get(player)/1000)+cooldown - (System.currentTimeMillis()/1000);
-                    if (secondsLeft>0) {
-                        player.sendMessage(ChatColor.translateAlternateColorCodes('&', PLUGIN.getConfig().getString("msgCooldown").replace("{timeleft}", secondsLeft + "")));
+                    if (PLUGIN.getConfig().getStringList("BlacklistedWorlds").contains(world.getName())) {
+                        player.sendMessage(ChatColor.translateAlternateColorCodes('&', PLUGIN.getConfig().getString("msgBlacklistedWorld")));
                         return false;
+                }
+
+                    if (PLUGIN.rtpCooldown.containsKey(player) && !player.hasPermission("rtpme.cooldown.bypass")) {
+                        int cooldown = PLUGIN.getConfig().getInt("Cooldown");
+                        long secondsLeft = (PLUGIN.rtpCooldown.get(player)/1000)+cooldown - (System.currentTimeMillis()/1000);
+                        if (secondsLeft>0) {
+                            player.sendMessage(ChatColor.translateAlternateColorCodes('&', PLUGIN.getConfig().getString("msgCooldown").replace("{timeleft}", secondsLeft + "")));
+                            return false;
                     }
                 }
 

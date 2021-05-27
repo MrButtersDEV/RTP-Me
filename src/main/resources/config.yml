@@ -8,6 +8,7 @@ msgReload: "&3Reloaded RTP Me!"
 msgArgsPerm: "&cInvalid arguments and or permission"
 msgCooldown: "&eRTP is on a cooldown please wait &6{timeleft}&e seconds."
 msgBlacklistedWorld: "&cYou cannot rtp in this world."
+msgWrongDimension: "&cYou cannot rtp in this dimension."
 
 # Max distances
 MaxX: 1500
@@ -20,5 +21,13 @@ MinZ: 500
 # Cooldown timer (Seconds):
 Cooldown: 120
 
+# Disabled Worlds
 BlacklistedWorlds:
   - worldname
+
+# Disabled Dimntions
+BlacklistedDimensions:
+#  - CUSTOM
+#  - NORMAL
+#  - NETHER
+#  - THE_END
