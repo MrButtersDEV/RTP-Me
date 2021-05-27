@@ -25,7 +25,10 @@ Cooldown: 120
 BlacklistedWorlds:
   - worldname
 
-# Disabled Dimntions
+# Disabled Dimentions
+# -----
+# WARNING: NETHER TELEPORTS CURRENTLY WILL TELEPORT YOU ON TOP OF THE NETHER
+# -----
 BlacklistedDimensions:
 #  - CUSTOM
 #  - NORMAL
