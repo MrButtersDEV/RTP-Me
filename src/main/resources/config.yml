@@ -8,6 +8,8 @@ msgReload: "&3Reloaded RTP Me!"
 msgArgsPerm: "&cInvalid arguments and or permission"
 msgCooldown: "&eRTP is on a cooldown please wait &6{timeleft}&e seconds."
 msgBlacklistedWorld: "&cYou cannot rtp in this world."
+msgWrongDimension: "&cYou cannot rtp in this dimension."
+msgNotEnoughMoney: "&eYou do not have enough money to rtp."
 
 # Max distances
 MaxX: 1500
@@ -20,5 +22,19 @@ MinZ: 500
 # Cooldown timer (Seconds):
 Cooldown: 120
 
+# cost of RTP (set to -1 to disable)
+rtpCost: -1
+
+# Disabled Worlds
 BlacklistedWorlds:
   - worldname
+
+# Disabled Dimentions
+# -----
+# WARNING: NETHER TELEPORTS CURRENTLY WILL TELEPORT YOU ON TOP OF THE NETHER
+# -----
+BlacklistedDimensions:
+#  - CUSTOM
+#  - NORMAL
+#  - NETHER
+#  - THE_END
