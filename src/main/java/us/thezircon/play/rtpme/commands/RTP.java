@@ -25,7 +25,14 @@ public class RTP implements TabExecutor {
     private int minX = PLUGIN.getConfig().getInt("MinX");
     private int minZ = PLUGIN.getConfig().getInt("MinZ");
 
+    private boolean doForceWorld = PLUGIN.getConfig().getBoolean("ForceWorld.enabled");
+
     private Location getRTPLocation(World world) {
+
+        if (doForceWorld) {
+            world = Bukkit.getWorld(PLUGIN.getConfig().getString("ForceWorld.world"));
+        }
+
         Random random = new Random();
         int x = random.nextInt((maxX - minX) + 1) + minX;
         int z = random.nextInt((maxZ - minZ) + 1) + minZ;
@@ -96,11 +103,10 @@ public class RTP implements TabExecutor {
                             PLUGIN.biomeCounter.put(biome, 1);
                         }
 
-                        Location pLoc = player.getLocation();
                         String locMsg = ChatColor.translateAlternateColorCodes('&', PLUGIN.getConfig().getString("msgLoc"));
-                        locMsg = locMsg.replace("{x}", String.valueOf(pLoc.getBlockX()));
-                        locMsg = locMsg.replace("{y}", String.valueOf(pLoc.getBlockY()));
-                        locMsg = locMsg.replace("{z}", String.valueOf(pLoc.getBlockZ()));
+                        locMsg = locMsg.replace("{x}", String.valueOf(fLoc.getBlockX()));
+                        locMsg = locMsg.replace("{y}", String.valueOf(fLoc.getBlockY()));
+                        locMsg = locMsg.replace("{z}", String.valueOf(fLoc.getBlockZ()));
                         player.sendMessage(locMsg);
                     }
                 });

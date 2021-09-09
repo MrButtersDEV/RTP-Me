@@ -1,5 +1,5 @@
 #Config Version:
-confVersion: 2
+confVersion: 3
 
 # Messages:
 msgSearch: "&6Finding location..."
@@ -20,5 +20,12 @@ MinZ: 500
 # Cooldown timer (Seconds):
 Cooldown: 120
 
+# Should /rtp teleport you to this world and this world only?
+# If set to "false" the user will be randomly placed in the world they are currently in
+ForceWorld:
+  enabled: false
+  world: "world"
+
+# A list of worlds that /rtp will not work in
 BlacklistedWorlds:
   - worldname

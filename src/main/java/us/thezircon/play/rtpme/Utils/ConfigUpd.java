@@ -54,6 +54,14 @@ public class ConfigUpd {
                 conf.set("MinX", 500);
                 conf.set("MinZ", 500);
                 System.out.println("[RTP-ME] Applying config updates for version 2");
+            case 3:
+                conf.set("ForceWorld.enabled", false);
+                System.out.println("[RTP-ME] While Applying config updates for version 3 \"ForceWorld.enabled\" was set to false to maintain previous functionality");
+                System.out.println("[RTP-ME] If you would like this to change and force the user to rtp in preferred world please set to \"true\"");
+                conf.set("ForceWorld.world", "world");
+                System.out.println("[RTP-ME] Applying config updates for version 3");
+
+                conf.set("confVersion", ver);
                 break;
             default:
                 System.out.println("[RTP-ME] Unable to update config");

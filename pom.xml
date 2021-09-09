@@ -6,7 +6,7 @@
 
     <groupId>us.thezircon.play</groupId>
     <artifactId>RTP-Me</artifactId>
-    <version>1.3-SNAPSHOT</version>
+    <version>1.4-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>RTP Me</name>

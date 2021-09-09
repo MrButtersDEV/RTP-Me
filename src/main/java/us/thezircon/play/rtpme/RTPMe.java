@@ -27,7 +27,7 @@ public final class RTPMe extends JavaPlugin {
         saveDefaultConfig();
 
         // Update Config
-        ConfigUpd updConf = new ConfigUpd(2);
+        ConfigUpd updConf = new ConfigUpd(3);
         updConf.up2Date();
 
         // Commands

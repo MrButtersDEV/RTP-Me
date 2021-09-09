@@ -1,5 +1,5 @@
 name: RTP-Me
-version: 1.3-SNAPSHOT
+version: 1.4-SNAPSHOT
 main: us.thezircon.play.rtpme.RTPMe
 authors: [BUTTERFIELD8]
 description: Tp's a player to an unknow location
